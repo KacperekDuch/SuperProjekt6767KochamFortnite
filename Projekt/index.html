@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Media App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<button id="toggleSidebar">☰</button>
+
+<div class="container">
+    <aside id="sidebar">
+        <h2>Master App</h2>
+
+        <!-- 1. Tryb Booru (Tagi + Wykluczenia + Presety) -->
+        <div id="group-booru" class="api-input-group" style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="inputGroup">
+                <label>Tags</label>
+                <input type="text" id="tags" placeholder="np. catgirl blonde_hair" autocomplete="off">
+            </div>
+
+            <div class="inputGroup">
+                <label>Exclude Tags</label>
+                <input type="text" id="exclude" placeholder="lowres comic">
+            </div>
+
+            <div class="inputGroup">
+                <label>Tag Presets</label>
+                <!-- NOWE PRESETY -->
+                <select id="presetSelect">
+                    <option value="">-- Choose Preset --</option>
+                    <option value="safe">Safe</option>
+                    <option value="futa">Futa</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 2. Tryb Wallpapers / Stock (Czyste Query / Search) -->
+        <div id="group-wallpapers" class="api-input-group" style="display: none; flex-direction: column; gap: 6px;">
+            <div class="inputGroup">
+                <label>Search Query</label>
+                <input type="text" id="searchQuery" placeholder="np. cyberpunk city, nature" autocomplete="off">
+            </div>
+        </div>
+
+        <!-- 3. Tryb Fun / Others / Proste API -->
+        <div id="group-fun" class="api-input-group" style="display: none; flex-direction: column; gap: 6px;">
+            <div style="font-size: 12px; color: #aaa; padding: 4px 0;">
+                To API nie wymaga dodatkowych parametrów. Kliknij Random!
+            </div>
+        </div>
+
+        <!-- API Settings -->
+        <details>
+            <summary>⚙️ API Settings</summary>
+            <div class="accordion-content">
+                <label>Max Page</label>
+                <input type="number" id="maxPage" value="50" min="1">
+
+                <label>Attempts</label>
+                <input type="number" id="tries" value="10" min="1">
+
+                <label>Items</label>
+                <input type="number" id="items" value="1" min="1" max="100">
+            </div>
+        </details>
+
+        <!-- Feed -->
+        <details>
+            <summary>🤖 Feed</summary>
+            <div class="accordion-content">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff;">
+                    <input type="checkbox" id="appendMode" style="width: auto;"> Dodawać do istniejących
+                </label>
+
+                <label>Seconds (Fetch Interval):</label>
+                <input type="number" id="autoFetchInterval" value="5" min="1">
+
+                <button id="autoLoadBtn" class="toggle-btn">⏳ Auto-Fetch: OFF</button>
+                <button id="tiktokSmartBtn" class="toggle-btn">📱 Smart Sound: OFF</button>
+            </div>
+        </details>
+
+        <!-- Media Control -->
+        <details>
+            <summary>🔊 Media Control</summary>
+            <div class="accordion-content">
+                <button id="muteBtn" class="toggle-btn active">🔇 Mute All</button>
+                <button id="pauseBtn" class="toggle-btn active">⏸ Pause All</button>
+                <button id="nativeControlsBtn" class="toggle-btn">🎛 Controls: OFF</button>
+                
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff; margin-top: 4px;">
+                    <input type="checkbox" id="globalVolumeToggle" checked style="width: auto;"> Master Sound (Enable Volume)
+                </label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.10">
+            </div>
+        </details>
+
+        <!-- Layout -->
+        <details>
+            <summary>🎨 Layout Customization</summary>
+            <div class="accordion-content">
+                <label>Kategoria Układu</label>
+                <select id="layoutCategory">
+                    <option value="moodboard" selected>Moodboard</option>
+                    <option value="single">Single / Grid</option>
+                    <option value="tiktok">TikTok Slideshow</option>
+                </select>
+
+                <label>Konkretny Styl</label>
+                <select id="layoutStyle"></select>
+
+                <label style="margin-top: 8px;">Motyw Kolorystyczny</label>
+                <select id="colorTheme">
+                    <!-- NOWE LAYOUTY -->
+                    <option value="default">Default Blue</option>
+                    <option value="cyberpunk">Cyberpunk Neon</option>
+                    <option value="crimson">Crimson Red</option>
+                    <option value="emerald">Emerald Green</option>
+                </select>
+
+                <div id="tiktokOptionsContainer" style="display: none; margin-top: 6px; flex-direction: column; gap: 6px;">
+                    <label>Liczba Kolumn TikTok:</label>
+                    <input type="number" id="tiktokColumns" value="1" min="1" max="6">
+
+                    <label>Tryb Dopasowania:</label>
+                    <select id="tiktokFitMode">
+                        <option value="contain">Contain</option>
+                        <option value="cover">Cover</option>
+                    </select>
+                </div>
+            </div>
+        </details>
+
+        <!-- Skróty klawiszowe -->
+        <details>
+            <summary>⌨️ Keyboard & Shortcuts</summary>
+            <div class="accordion-content">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff;">
+                    <input type="checkbox" id="keyboardListeningToggle" checked style="width: auto;"> Nasłuchiwanie klawiatury
+                </label>
+                <div style="font-size: 12px; color: #aaa; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; margin-top: 4px;">
+                    <b>Ściągawka skrótów:</b><br>
+                    • <b>Spacja:</b> Dodaj do istniejących<br>
+                    • <b>R:</b> Reset / Random od zera<br>
+                    • <b>M:</b> Mute / Unmute All<br>
+                    • <b>P:</b> Pause / Play All<br>
+                    • <b>Esc:</b> Zamknij podgląd
+                </div>
+            </div>
+        </details>
+
+        <!-- NOWE API -->
+        <div id="bottomIsland">
+            <div class="inputGroup">
+                <label>Source API (Categories)</label>
+                <select id="site">
+                    <optgroup label="Booru">
+                        <option value="rule34" data-group="booru" selected>Rule34</option>
+                        <option value="safebooru" data-group="booru">Safebooru</option>
+                        <option value="konachan" data-group="booru">Konachan</option>
+                    </optgroup>
+                    <optgroup label="Wallpapers / Stock">
+                        <option value="wallhaven" data-group="wallpapers">Wallhaven</option>
+                        <option value="pixabay" data-group="wallpapers">Pixabay</option>
+                        <option value="pexels" data-group="wallpapers">Pexels</option>
+                    </optgroup>
+                    <optgroup label="Fun / Others">
+                        <option value="cats" data-group="fun">The Cat API</option>
+                    </optgroup>
+                </select>
+            </div>
+            <button id="randomBtn">Random</button>
+        </div>
+    </aside>
+
+    <main id="viewer">
+        <div id="gallery" class="layout-pinterest"></div>
+    </main>
+</div>
+
+<!-- MODAL PODGLĄDU -->
+<div id="preview" class="hidden">
+    <div id="previewContainer">
+        <div id="previewToolbar">
+            <button id="closePreview">✕ Close</button>
+            <button id="openPost">🔗 Open</button>
+            <button id="copyLink">📋 Copy Link</button>
+            <button id="downloadMedia">⬇ Download</button>
+        </div>
+        <div id="previewContent"></div>
+        <div id="previewTags"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
